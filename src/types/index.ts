@@ -46,3 +46,14 @@ export type INavLink = {
     username: string;
     password: string;
   };
+
+  export type IContextType = {
+    name: ReactNode;
+    imageUrl: string;
+    $id: any;
+    user: IUser,
+    isLoading: boolean,
+    setUser : React.Dispatch<React.SetStateAction<boolean>>,
+    checkAuthUser: ()=> Promise<boolean>
+
+  }
