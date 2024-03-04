@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type INavLink = {
     imgURL: string;
     route: string;

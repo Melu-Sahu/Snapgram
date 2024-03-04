@@ -45,7 +45,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     email: currentAccount.email,
                     imageUrl: currentAccount.imageUrl,
                     bio: currentAccount.bio
-                })
+                });
                 setIsAuthenticated(true);
                 return true;
             }
@@ -66,6 +66,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             navigate("/sign-in")
         }
         checkAuthUser();
+
+        
+
     }, [])
 
     const userValues = {

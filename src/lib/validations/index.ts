@@ -12,3 +12,14 @@ export const SignupValidation = z.object({
     email: z.string().min(8, {message: "Too short"}),
     password: z.string().min(8, {message: "password must contain at least 8 characters"})
   });
+
+  export const PostValidation = z.object({
+    caption: z.string().min(5, {
+      message: "Username must be at least r characters.",
+    }).max(2200, "Cannot write more then 2200 characters"),
+    file: z.custom<File[]>(),
+    location: z.string().min(2).max(100),
+    tags: z.string(),
+  })
+  
+  
