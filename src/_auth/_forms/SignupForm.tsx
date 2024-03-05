@@ -38,17 +38,18 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
     const newUser = await createUserAccount(values);
-    console.log("New User In Signup Form", newUser);
+    // console.log("New User In Signup Form", newUser);
 
     if (!newUser) {
-      console.log("this is missing");
-      
 
       return toast({
-        title: "Signup Failed. Please try again.",
+        title: "Signup Failed. Please try again!!",
+      })
+    } else {
+      toast({
+        title: "Account Created Successfully."
       })
     }
-
 
 
     const session = await signInAccount({
@@ -58,7 +59,7 @@ const SignupForm = () => {
 
     if (!session) {
       return toast({
-        title: "Signin Failed. Please try again. Session Get Error"
+        title: "Signin Failed. Please try again!!"
       })
     }
 
@@ -66,12 +67,13 @@ const SignupForm = () => {
 
     if (isLoggedIn) {
       form.reset();
-      navigate('/')
+      toast({
+        title: "LoggedIn Successfully."
+      })
+      navigate('/');
     } else {
-      return toast({ title: "Signup Failed. Please try again IsLoggin False." });
-
+      return toast({ title: "Signup Failed. Please try again!!" });
     }
-
   }
 
   return (

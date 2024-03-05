@@ -40,7 +40,7 @@ const SigninForm = () => {
 
     if (!session) {
       return toast({
-        title: "Signin Failed. Please try again. Session Get Error"
+        title: "Signin Failed. Please try again!!"
       })
     }
 
@@ -48,11 +48,15 @@ const SigninForm = () => {
 
     if (isLoggedIn) {
       form.reset();
+      toast({
+        title:"LoggedIn Successfully."
+      })
       navigate('/')
     } else {
-      return toast({ title: "Signup Failed. Please try again IsLoggin False." });
+      return toast({ title: "Signup Failed. Please try again!!" });
 
     }
+
   }
 
   return (

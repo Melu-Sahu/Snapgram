@@ -1,6 +1,7 @@
-import { INewPost, INewUser } from "@/types";
+import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { Query } from "appwrite";
 import { ID } from "appwrite";
+import { useId } from "react";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
 export async function createUserAccount(user: INewUser) {
@@ -27,8 +28,6 @@ export async function createUserAccount(user: INewUser) {
       imageUrl: avatarUrl,
       username: user.username,
     })
-
-
 
     return newUser;
   } catch (error) {
@@ -139,6 +138,7 @@ export async function createNewPost(post: INewPost) {
     const fileUrl = await getFilePreview(uploadedfile.$id);
 
     if (!fileUrl) {
+      deleteFile(uploadedfile.$id);
       throw new Error;
     }
 
@@ -214,6 +214,78 @@ export async function deleteFile(fileId: string) {
   }
 }
 
+export async function updatePost(post: IUpdatePost) {
+
+  const hasFileToUpdate = post.file.length > 0
+  try {
+
+    let image = {
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+    }
+
+    if (hasFileToUpdate) {
+
+      const uploadedfile = await uploadFile(post.file[0]);
+      if (!uploadedfile) {
+        throw new Error;
+      }
+
+      const fileUrl = await getFilePreview(uploadedfile.$id);
+
+      if (!fileUrl) {
+        deleteFile(uploadedfile.$id);
+        throw new Error;
+      }
+
+      image = { ...image, imageUrl: fileUrl, imageId: uploadedfile.$id };
+    }
+
+    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      post.postId,
+      {
+        caption: post.caption,
+        imageUrl: image.imageUrl,
+        imageId: image.imageId,
+        location: post.location,
+        tags: tags,
+      }
+    )
+
+    if (!updatedPost) {
+      await deleteFile(post.imageId);
+      throw new Error;
+    }
+
+    return updatedPost;
+  } catch (error) {
+    console.log("Appwrite Exception :: updatePost :: ", error);
+  }
+}
+
+
+export async function deletePost(postId:string, imageId:string) {
+
+  if(!postId || !imageId) throw new Error;
+
+  try {
+    await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    );
+
+    return {status: "ok"}
+    
+  } catch (error) {
+    console.log("Appwrite Exception :: deletePost :: ", error);
+  }
+  
+}
 
 // ********** Get Posts *************
 
@@ -243,7 +315,7 @@ export async function likePost(postId: string, likesArray: string[]) {
         likes: likesArray
       }
     )
-    if(!updatedPost){
+    if (!updatedPost) {
       throw new Error;
     }
     return updatedPost;
@@ -253,8 +325,9 @@ export async function likePost(postId: string, likesArray: string[]) {
 
 }
 
-export async function savePost(postId: string, userId: string) {  
+export async function savePost(postId: string, userId: string) {
 
+  console.log("Unique ID new generated here:", useId());
   try {
     const updatedPost = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -265,16 +338,17 @@ export async function savePost(postId: string, userId: string) {
         post: postId
       }
     )
-    if(!updatedPost){
+
+    if (!updatedPost) {
       throw new Error;
     }
     return updatedPost;
   } catch (error) {
-    console.log("Appwrite Exception :: likePost :: ", error);
+    console.log("Appwrite Exception :: savePost :: ", error);
   }
 }
 
-export async function deleteSavedPost(savedRecordId: string) {  
+export async function deleteSavedPost(savedRecordId: string) {
 
   try {
     const statusCode = await databases.deleteDocument(
@@ -282,11 +356,26 @@ export async function deleteSavedPost(savedRecordId: string) {
       appwriteConfig.savesCollectionId,
       savedRecordId
     )
-    if(!statusCode){
+    if (!statusCode) {
       throw new Error;
     }
-    return {status: "ok", statusCode};
+    return { status: "ok", statusCode };
   } catch (error) {
-    console.log("Appwrite Exception :: likePost :: ", error);
+    console.log("Appwrite Exception :: deleteSavedPost :: ", error);
   }
 }
+
+
+export async function getPostById(postId: string) {
+  try {
+    const post = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId
+    )
+    return post;
+  } catch (error) {
+    console.log("Appwrite Exception :: getPostById :: ", error);
+  }
+}
+
