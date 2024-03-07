@@ -431,7 +431,6 @@ export async function getInfiniteScroll({ pageParam }: { pageParam: Number }) {
 
 export async function searchPosts(searchTerms: string) {
 
-
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
