@@ -1,7 +1,20 @@
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-    useMutation, useQuery, useQueryClient,
-} from '@tanstack/react-query';
-import { createUserAccount, signInAccount, signOutAccount, createNewPost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, updatePost, deletePost } from '../appwrite/api';
+    createUserAccount,
+    signInAccount,
+    signOutAccount,
+    createNewPost,
+    getRecentPosts,
+    likePost, savePost,
+    deleteSavedPost,
+    getCurrentUser,
+    getPostById,
+    updatePost,
+    deletePost,
+    getUsersPosts,
+    getInfiniteScroll,
+    searchPosts
+} from '../appwrite/api';
 import { INewUser, INewPost, IUpdatePost } from '@/types';
 import { QUERY_KEYS } from './queryKeys';
 
@@ -66,24 +79,25 @@ export const useLikedPostMutation = () => {
     })
 }
 export const useSavePostMutation = () => {
+
     const queryClient = useQueryClient();
-
     return useMutation({
-        mutationFn: ({ postId, userId }: { postId: string; userId: string }) => savePost(postId, userId),
-        onSuccess: (data) => {
+        mutationFn: ({ userId, postId }: { userId: string; postId: string }) => savePost(userId, postId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+            });
+        },
+    });
+};
 
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
-            })
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_POSTS]
-            })
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_CURRENT_USER]
-            })
-        }
-    })
-}
+
 export const useDeleteSavedPostMutation = () => {
     const queryClient = useQueryClient();
 
@@ -133,7 +147,15 @@ export const useDeletePostMutation = () => {
     })
 }
 
+// User's Post Mutation
 
+export const getUsersPostsMutation = (userId?: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
+        queryFn: () => getUsersPosts(userId),
+        enabled: !!userId,
+    });
+}
 
 
 // User Mutations
@@ -146,4 +168,30 @@ export const useGetCurrentUserMutation = () => {
 };
 
 
+export const useGetPostMutation = () => {
+    return useInfiniteQuery({
+        queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+        queryFn: getInfiniteScroll as any,
+        getNextPageParam: (lastPage: any) => {
+            console.log("Last Page", lastPage);
+            
+          // If there's no data, there are no more pages.
+          if (lastPage && lastPage.documents.length === 0) {
+            return null;
+          }
+    
+          // Use the $id of the last document as the cursor.
+          const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+          return lastId;
+        },
+      });
+};
 
+export const useSerarhPostMutation = (searchTerm: string) => {
+
+    return useQuery({
+        queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
+        queryFn: () => searchPosts(searchTerm),
+        enabled: !!searchTerm,
+    });
+}

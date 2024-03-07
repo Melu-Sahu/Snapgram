@@ -14,7 +14,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
     const { user } = useUserContext();
 
-    console.log("Post", post);
+    // console.log("Post", post);
     
 
     if (!post) return;

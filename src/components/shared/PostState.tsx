@@ -9,32 +9,36 @@ import {
     useGetCurrentUserMutation,
 } from "@/lib/react-query/queryAndMutations";
 import Loader from "./Loader";
+import { useToast } from "../ui/use-toast";
 
 type PostStatsProps = {
-    post: Models.Document;
+    post?: Models.Document;
     userId: string;
 };
 
 const PostStats = ({ post, userId }: PostStatsProps) => {
     const location = useLocation();
-    const likesList = post.likes.map((user: Models.Document) => user.$id);
+    const likesList = post?.likes.map((user: Models.Document) => user.$id);
 
     const [likes, setLikes] = useState<string[]>(likesList);
     const [isSaved, setIsSaved] = useState(false);
+    const { toast } = useToast();
 
     const { mutate: likePost, isPending: isLikingPost } = useLikedPostMutation();
     const { mutate: savePost, isPending: isSavingPost } = useSavePostMutation();
     const { mutate: deleteSavePost, isPending: isDeletingSavedPost } = useDeleteSavedPostMutation();
 
-    const { data: currentUser, isPending: isGettingCurrentUser } = useGetCurrentUserMutation();
+    const { data: currentUser } = useGetCurrentUserMutation();
 
-    const savedPostRecord = currentUser?.save.find((record: Models.Document) => record.post.$id === post.$id);
-
+    const savedPostRecord = currentUser?.save.find(
+        (record: Models.Document) => record.post.$id === post?.$id
+    );
     useEffect(() => {
-        setIsSaved(!!savedPostRecord);
+
+        setIsSaved(savedPostRecord ? true : false);
     }, [currentUser]);
 
-    console.log(`savedPostRecord for post id ${post.$id}`, savedPostRecord);
+    // console.log(`savedPostRecord for post id ${post.$id}`, savedPostRecord);
 
 
     const handleLikePost = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
@@ -49,18 +53,26 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         }
 
         setLikes(likesArray);
-        likePost({ postId: post.$id, likesArray });
+        likePost({ postId: post?.$id || "", likesArray });
     };
 
     const handleSavePost = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
         e.stopPropagation();
 
+        // console.log("clidked save post for post Id: ", post.$id);
+
         if (savedPostRecord) {
             setIsSaved(false);
+            toast({
+                title: "Removed from saved."
+            })
             return deleteSavePost(savedPostRecord.$id);
         }
 
-        savePost({ userId: userId, postId: post.$id });
+        const saved = savePost({ userId: userId, postId: post?.$id || "" });
+        toast({
+            title: "Post saved successfully."
+        });
         setIsSaved(true);
     };
 

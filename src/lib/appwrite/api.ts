@@ -1,7 +1,6 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { Query } from "appwrite";
 import { ID } from "appwrite";
-import { useId } from "react";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
 export async function createUserAccount(user: INewUser) {
@@ -268,9 +267,9 @@ export async function updatePost(post: IUpdatePost) {
 }
 
 
-export async function deletePost(postId:string, imageId:string) {
+export async function deletePost(postId: string, imageId: string) {
 
-  if(!postId || !imageId) throw new Error;
+  if (!postId || !imageId) throw new Error;
 
   try {
     await databases.deleteDocument(
@@ -279,12 +278,12 @@ export async function deletePost(postId:string, imageId:string) {
       postId
     );
 
-    return {status: "ok"}
-    
+    return { status: "ok" }
+
   } catch (error) {
     console.log("Appwrite Exception :: deletePost :: ", error);
   }
-  
+
 }
 
 // ********** Get Posts *************
@@ -325,24 +324,23 @@ export async function likePost(postId: string, likesArray: string[]) {
 
 }
 
-export async function savePost(postId: string, userId: string) {
-
-  console.log("Unique ID new generated here:", useId());
+export async function savePost(userId: string, postId: string) {
   try {
-    const updatedPost = await databases.updateDocument(
+    const updatedPost = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.savesCollectionId,
       ID.unique(),
       {
         user: userId,
-        post: postId
+        post: postId,
       }
-    )
+    );
 
     if (!updatedPost) {
       throw new Error;
     }
     return updatedPost;
+
   } catch (error) {
     console.log("Appwrite Exception :: savePost :: ", error);
   }
@@ -379,3 +377,74 @@ export async function getPostById(postId: string) {
   }
 }
 
+
+
+// getUsers posts
+
+export async function getUsersPosts(userId?: string) {
+
+  if (!userId) return;
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      [Query.equal("creator", userId), Query.orderDesc("$createdAt")]
+    )
+
+    if (!posts) {
+      throw new Error;
+    }
+
+    return posts;
+
+  } catch (error) {
+    console.log("Appwrite Exception :: getUsersPosts :: ", error);
+  }
+
+}
+
+
+export async function getInfiniteScroll({ pageParam }: { pageParam: Number }) {
+
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      queries
+    );
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log("Appwrite Exception :: getInfiniteScroll :: ", error);
+  }
+
+}
+
+export async function searchPosts(searchTerms: string) {
+
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      [Query.search("caption", searchTerms)]
+    )
+    if (!posts) {
+      throw Error;
+    }
+
+    return posts;
+  } catch (error) {
+    console.log("Appwrite Exception :: searchPosts :: ", error);
+  }
+
+}
