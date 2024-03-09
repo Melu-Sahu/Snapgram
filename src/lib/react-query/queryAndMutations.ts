@@ -13,12 +13,14 @@ import {
     deletePost,
     getUsersPosts,
     getInfiniteScroll,
-    searchPosts
+    searchPosts,
+    getAllUsers,
+    getSavedPosts
 } from '../appwrite/api';
 import { INewUser, INewPost, IUpdatePost } from '@/types';
 import { QUERY_KEYS } from './queryKeys';
 
-
+// Auth Services
 
 export const useCreateUserAccountMutation = () => {
     return useMutation({
@@ -37,6 +39,8 @@ export const useSignOutAccountMutation = () => {
     });
 }
 
+// Post Services
+
 export const useCreatePostMutation = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -53,9 +57,8 @@ export const useGetRecentPostsMutation = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
         queryFn: getRecentPosts,
-    })
+    });
 }
-
 
 export const useLikedPostMutation = () => {
     const queryClient = useQueryClient();
@@ -78,6 +81,7 @@ export const useLikedPostMutation = () => {
         }
     })
 }
+
 export const useSavePostMutation = () => {
 
     const queryClient = useQueryClient();
@@ -96,7 +100,6 @@ export const useSavePostMutation = () => {
         },
     });
 };
-
 
 export const useDeleteSavedPostMutation = () => {
     const queryClient = useQueryClient();
@@ -173,23 +176,37 @@ export const useGetPostMutation = () => {
         queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
         queryFn: getInfiniteScroll as any,
         getNextPageParam: (lastPage: any) => {
-          // If there's no data, there are no more pages.
-          if (lastPage && lastPage.documents.length === 0) {
-            return null;
-          }
-    
-          // Use the $id of the last document as the cursor.
-          const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
-          return lastId;
+            // If there's no data, there are no more pages.
+            if (lastPage && lastPage.documents.length === 0) {
+                return null;
+            }
+
+            // Use the $id of the last document as the cursor.
+            const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+            return lastId;
         },
-      });
+    });
 };
 
 export const useSerarhPostMutation = (searchTerm: string) => {
-
     return useQuery({
         queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
         queryFn: () => searchPosts(searchTerm),
         enabled: !!searchTerm,
     });
-}
+};
+
+export const getAllUsersMutation = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USERS],
+        queryFn: () => getAllUsers(),
+    });
+};
+
+export const getUsersSavedPostMutatation = (userId: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.USERS_SAVED_POST_DETAILS],
+        queryFn: () => getSavedPosts(userId),
+        enabled: !!userId
+    });
+};

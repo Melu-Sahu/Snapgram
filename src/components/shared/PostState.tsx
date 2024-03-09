@@ -24,7 +24,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     const [isSaved, setIsSaved] = useState(false);
     const { toast } = useToast();
 
-    const { mutate: likePost, isPending: isLikingPost } = useLikedPostMutation();
+    const { mutate: likePost } = useLikedPostMutation();
     const { mutate: savePost, isPending: isSavingPost } = useSavePostMutation();
     const { mutate: deleteSavePost, isPending: isDeletingSavedPost } = useDeleteSavedPostMutation();
 
@@ -64,14 +64,14 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         if (savedPostRecord) {
             setIsSaved(false);
             toast({
-                title: "Removed from saved."
+                title: "Removed from saved.",
             })
             return deleteSavePost(savedPostRecord.$id);
         }
 
         const saved = savePost({ userId: userId, postId: post?.$id || "" });
         toast({
-            title: "Post saved successfully."
+            title: "Post saved successfully.",
         });
         setIsSaved(true);
     };

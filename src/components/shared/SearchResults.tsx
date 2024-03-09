@@ -11,8 +11,11 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultsProp) =
 
   if (isSearchFetching) {
     return <Loader />
-  } else if (searchedPosts && searchedPosts.documents.length > 0) {
-    return <GridPostList posts={searchedPosts.documents} />
+  } else if (searchedPosts && searchedPosts.length > 0) {
+
+    console.log("Seacched Post", searchedPosts);
+
+    return <GridPostList posts={searchedPosts} showUser={true} showState={true} />
   }
 
   return (
@@ -22,4 +25,4 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultsProp) =
   )
 }
 
-export default SearchResults
+export default SearchResults;

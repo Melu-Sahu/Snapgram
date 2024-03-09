@@ -8,7 +8,6 @@ import { SignupValidation as formSchema } from '@/lib/validations';
 import { z } from 'zod';
 import Loader from '@/components/shared/Loader';
 import { Link, useNavigate } from 'react-router-dom';
-// import { createUserAccount } from '@/lib/appwrite/api';
 import { useToast } from '@/components/ui/use-toast';
 import { useCreateUserAccountMutation, useSignInAccountMutation } from '@/lib/react-query/queryAndMutations';
 import { useUserContext } from '@/context/AuthContext';
@@ -20,10 +19,10 @@ const SignupForm = () => {
   const { toast } = useToast()
 
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccountMutation();
-  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccountMutation();
+  const { mutateAsync: signInAccount } = useSignInAccountMutation();
   const navigate = useNavigate();
 
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
+  const { checkAuthUser } = useUserContext()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

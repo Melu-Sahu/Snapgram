@@ -2,15 +2,17 @@ import Loader from '@/components/shared/Loader';
 import PostStats from '@/components/shared/PostState';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
-import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations'
+import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
 import { multiFormatDateString } from '@/lib/utils';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
+import GridPostList from '@/components/shared/GridPostList';
 
 const PostDetails = () => {
   const { id } = useParams();
-  const { data: post, isPending } = useGetPostByIdMutation(id || '');
+  const { data: post, isPending: isGettingPost } = useGetPostByIdMutation(id || '');
   const { user } = useUserContext();
-
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const { data: userPosts, isLoading: isUserPostLoading } = getUsersPostsMutation(post?.creator.$id);
@@ -19,6 +21,27 @@ const PostDetails = () => {
 
   const handleDeletePost = () => {
 
+    console.log("Delete button pressed.");
+
+    /* Delete post functionality is not working now. We will fix it later. */
+    // const isDeleted = deletePost({ postId: post?.$id, imageId: post?.imageId });
+    // console.log("Is Deleted", isDeleted);
+
+
+    // if (isDeleted) {}
+
+    toast({
+      title: "Post Deleted."
+    });
+
+    navigate("/");
+
+  }
+
+  if (isGettingPost) {
+    return <div className="flex-center w-full h-full">
+      <Loader />
+    </div>
   }
 
   return (
@@ -93,7 +116,6 @@ const PostDetails = () => {
               </ul>
             </div>
 
-
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
             </div>
@@ -101,16 +123,15 @@ const PostDetails = () => {
         </div>
       )}
 
-      {/* <div className="w-full max-w-5xl">
+      <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
         <h3 className="body-bold md:h3-bold w-full my-10">
-          More Related Posts
+          More Related Posts of <span className='text-light-3'>@{post?.creator.username}</span>
         </h3>
-        {isUserPostLoading || !relatedPosts ? (<Loader />) : (<GridPostList posts={relatedPosts} />)}[[]]
-      </div> */}
+        {isUserPostLoading || !userPosts ? (<Loader />) : (<GridPostList posts={userPosts.documents} showUser={true} showState={true} />)}
+      </div>
     </div>
   );
 }
-
 export default PostDetails;

@@ -21,7 +21,7 @@ const SigninForm = () => {
   const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccountMutation();
   const navigate = useNavigate();
 
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
+  const { checkAuthUser } = useUserContext()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

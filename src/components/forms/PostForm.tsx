@@ -23,8 +23,6 @@ type PostFormProps = {
   action: "Create" | "Update";
 }
 
-
-
 const PostForm = ({ post, action }: PostFormProps) => {
 
   const { toast } = useToast();
@@ -86,7 +84,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
     } else {
       toast({ title: "Something wents wrong. Please try again!!" });
     }
-
   }
 
   return (
@@ -123,6 +120,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
             </FormItem>
           )}
         />
+        
         <FormField
           control={form.control}
           name="location"

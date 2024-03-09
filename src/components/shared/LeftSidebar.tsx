@@ -18,7 +18,6 @@ const LeftSidebar = () => {
         }
     }, [isSuccess]);
 
-
     return (
         <nav className='leftsidebar'>
             <div className='flex flex-col gap-11'>
@@ -33,7 +32,6 @@ const LeftSidebar = () => {
                         <p className='small-regular text-light-3'>@{user.user.username}</p>
                     </div>
                 </Link>
-
 
                 <ul className='flex flex-col gap-6'>
                     {
@@ -57,15 +55,13 @@ const LeftSidebar = () => {
                     }
 
                 </ul>
-
             </div>
             <Button variant="ghost" className='shad-button_ghost' onClick={() => signOutAccount()}>
                 <img src='/assets/icons/logout.svg' alt='logout' />
                 <p className='small-medium lg:base-medium'>Logout</p>
             </Button>
-
         </nav>
     )
 }
 
-export default LeftSidebar
+export default LeftSidebar;

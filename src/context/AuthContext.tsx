@@ -3,8 +3,6 @@ import { IContextType, IUser } from '@/types';
 import { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const INITIAL_USER = {
     id: "",
     name: "",
@@ -16,9 +14,9 @@ const INITIAL_USER = {
 
 const INITIAL_STATE = {
     user: INITIAL_USER,
+    setUser: () => { },
     isLoading: false,
     isAuthenticated: false,
-    setUser: () => { },
     setAuthenticated: () => { },
     checkAuthUser: async () => false as boolean,
 }
@@ -69,7 +67,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         
 
-    }, [])
+    }, []);
 
     const userValues = {
         user,

@@ -6,15 +6,11 @@ const BottomBar = () => {
 
   const { pathname } = useLocation();
 
-
-
   return (
     <section className='bottom-bar'>
       {
         bottombarLinks.map((link) => {
-
           const isActive = link.route === pathname;
-
 
           return (
 
@@ -28,7 +24,6 @@ const BottomBar = () => {
           )
         })
       }
-
     </section>
   )
 }

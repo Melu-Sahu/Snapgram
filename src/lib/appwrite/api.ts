@@ -37,7 +37,6 @@ export async function createUserAccount(user: INewUser) {
 
 }
 
-
 export async function saveUserToDB(user: {
   accountId: string;
   email: string;
@@ -61,7 +60,6 @@ export async function saveUserToDB(user: {
   }
 }
 
-
 export async function signInAccount(user: { email: string, password: string }) {
 
   try {
@@ -82,6 +80,24 @@ export async function getAccount() {
   } catch (error) {
     console.log("Appwrite Exception :: getAccount :: ", error);
   }
+}
+
+export async function getAllUsers() {
+  try {
+
+    const allUsers = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+    )
+
+    // console.log("All users in API.", allUsers);
+
+    return allUsers;
+  } catch (error) {
+    console.log("Appwrite Exception :: getAllUsers :: ", error);
+
+  }
+
 }
 
 
@@ -267,11 +283,16 @@ export async function updatePost(post: IUpdatePost) {
 }
 
 
+
+// delete functionality have some issue. we will fix it
 export async function deletePost(postId: string, imageId: string) {
 
   if (!postId || !imageId) throw new Error;
 
   try {
+
+    await deleteFile(imageId);
+
     await databases.deleteDocument(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
@@ -377,6 +398,23 @@ export async function getPostById(postId: string) {
   }
 }
 
+export async function getSavedPosts(userId: string) {
+
+  try {
+    const usersSavedPost = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      [Query.equal("user", userId), Query.orderDesc("$createdAt")]
+    )
+
+    // console.log("inside get Saved Posts details", usersSavedPost);
+
+    return usersSavedPost;
+
+  } catch (error) {
+    console.log("Appwrite Exception :: getSavedPosts :: ", error);
+  }
+}
 
 
 // getUsers posts
@@ -384,7 +422,6 @@ export async function getPostById(postId: string) {
 export async function getUsersPosts(userId?: string) {
 
   if (!userId) return;
-
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -395,6 +432,7 @@ export async function getUsersPosts(userId?: string) {
     if (!posts) {
       throw new Error;
     }
+    // console.log("Saved Post details :", posts);
 
     return posts;
 
@@ -403,6 +441,36 @@ export async function getUsersPosts(userId?: string) {
   }
 
 }
+
+/* it is in testing we will write it and impliment it later */
+
+// export async function getUsersInfiniteScroll({ pageParam }: { pageParam: Number }) {
+//   const queries: any[] = [Query.orderDesc("$createdAt"), Query.limit(2)];
+
+//   if (pageParam) {
+//     queries.push(Query.cursorAfter(pageParam.toString()));
+//   }
+
+//   try {
+//     const users = await databases.listDocuments(
+//       appwriteConfig.databaseId,
+//       appwriteConfig.userCollectionId,
+//       queries
+//     );
+
+//     if (!users) {
+//       throw Error;
+//     }
+
+//     // test
+//     console.log("User's in Infinite scroll api", users);
+
+//     return users;
+//   } catch (error) {
+//     console.log("Appwrite Exception :: getUsersPosts :: ", error);
+//   }
+
+// }
 
 
 export async function getInfiniteScroll({ pageParam }: { pageParam: Number }) {
@@ -447,3 +515,4 @@ export async function searchPosts(searchTerms: string) {
   }
 
 }
+
