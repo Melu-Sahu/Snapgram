@@ -106,7 +106,7 @@ export const useDeleteSavedPostMutation = () => {
 
     return useMutation({
         mutationFn: (savedRecordId: string) => deleteSavedPost(savedRecordId),
-        onSuccess: (data) => {
+        onSuccess: () => {
 
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_RECENT_POSTS] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_POSTS] });
@@ -142,7 +142,7 @@ export const useDeletePostMutation = () => {
 
     return useMutation({
         mutationFn: ({ postId, imageId }: { postId: string, imageId: string }) => deletePost(postId, imageId),
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
             })
@@ -174,18 +174,32 @@ export const useGetCurrentUserMutation = () => {
 export const useGetPostMutation = () => {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-        queryFn: getInfiniteScroll as any,
-        getNextPageParam: (lastPage: any) => {
+        queryFn: getInfiniteScroll,
+        getNextPageParam: (lastPage) => {
             // If there's no data, there are no more pages.
             if (lastPage && lastPage.documents.length === 0) {
                 return null;
             }
 
             // Use the $id of the last document as the cursor.
-            const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+            const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
             return lastId;
         },
     });
+
+
+    // return useInfiniteQuery({
+    //     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+    //     queryFn: getInfiniteScroll,
+    //     getNextPageParam: (lastPage, pages) => {
+
+    //         if (lastPage && lastPage.documents.length === 0) {
+    //             //             return null;
+    //             //         }
+
+    //         }
+    //     })
+
 };
 
 export const useSerarhPostMutation = (searchTerm: string) => {

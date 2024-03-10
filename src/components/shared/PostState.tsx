@@ -69,7 +69,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
             return deleteSavePost(savedPostRecord.$id);
         }
 
-        const saved = savePost({ userId: userId, postId: post?.$id || "" });
+        // const saved = savePost({ userId: userId, postId: post?.$id || "" });
+        savePost({ userId: userId, postId: post?.$id || "" });
         toast({
             title: "Post saved successfully.",
         });

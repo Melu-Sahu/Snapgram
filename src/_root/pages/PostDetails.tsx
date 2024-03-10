@@ -2,7 +2,8 @@ import Loader from '@/components/shared/Loader';
 import PostStats from '@/components/shared/PostState';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
-import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
+// import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
+import { getUsersPostsMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
 import { multiFormatDateString } from '@/lib/utils';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -16,7 +17,7 @@ const PostDetails = () => {
   const navigate = useNavigate();
 
   const { data: userPosts, isLoading: isUserPostLoading } = getUsersPostsMutation(post?.creator.$id);
-  const { mutate: deletePost } = useDeletePostMutation();
+  // const { mutate: deletePost } = useDeletePostMutation();
 
 
   const handleDeletePost = () => {
