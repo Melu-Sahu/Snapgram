@@ -12,10 +12,10 @@ import {
     updatePost,
     deletePost,
     getUsersPosts,
-    getInfiniteScroll,
     searchPosts,
     getAllUsers,
-    getSavedPosts
+    getSavedPosts,
+    getInfinitePostScroll
 } from '../appwrite/api';
 import { INewUser, INewPost, IUpdatePost } from '@/types';
 import { QUERY_KEYS } from './queryKeys';
@@ -174,7 +174,7 @@ export const useGetCurrentUserMutation = () => {
 export const useGetPostMutation = () => {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-        queryFn: getInfiniteScroll,
+        queryFn: getInfinitePostScroll,
         getNextPageParam: (lastPage) => {
             // If there's no data, there are no more pages.
             if (lastPage && lastPage.documents.length === 0) {

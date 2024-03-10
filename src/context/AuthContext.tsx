@@ -17,7 +17,7 @@ const INITIAL_STATE = {
     setUser: () => { },
     isLoading: false,
     isAuthenticated: false,
-    setAuthenticated: () => { },
+    setIsAuthenticated: () => { },
     checkAuthUser: async () => false as boolean,
 }
 
@@ -26,8 +26,8 @@ const AuthContext = createContext(INITIAL_STATE);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<IUser>(INITIAL_USER);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const navigate = useNavigate();
 
 
@@ -42,7 +42,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     username: currentAccount.username,
                     email: currentAccount.email,
                     imageUrl: currentAccount.imageUrl,
-                    bio: currentAccount.bio
+                    bio: currentAccount.bio,
                 });
                 setIsAuthenticated(true);
                 return true;
@@ -57,17 +57,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     useEffect(() => {
-        if (
-            localStorage.getItem('cookieFallback') === null ||
+        if (localStorage.getItem('cookieFallback') === null ||
             localStorage.getItem('cookieFallback') === '[]'
         ) {
-            navigate("/sign-in")
+            navigate("/sign-in");
         }
         checkAuthUser();
 
-        
-
-    }, []);
+    }, [localStorage.getItem('cookieFallback')]);
 
     const userValues = {
         user,

@@ -41,7 +41,7 @@ const AllUsers = () => {
               </Link>
               <Button
                 variant='outline'
-                className="hover:bg-blue-500 hover:outline-none"
+                className="hover:bg-primary-500 hover:outline-none"
                 onClick={() => alert("Followed.")}>Follow</Button>
             </div>
           ))

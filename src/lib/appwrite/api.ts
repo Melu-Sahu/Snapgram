@@ -473,7 +473,7 @@ export async function getUsersPosts(userId?: string) {
 // }
 
 
-export async function getInfiniteScroll({ pageParam }: { pageParam: Number }) {
+export async function getInfinitePostScroll({ pageParam }: { pageParam: Number }) {
 
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
 

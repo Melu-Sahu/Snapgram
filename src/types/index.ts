@@ -55,7 +55,7 @@ export type INavLink = {
     $id: any;
     user: IUser,
     isLoading: boolean,
-    setUser : React.Dispatch<React.SetStateAction<boolean>>,
+    setUser : React.Dispatch<React.SetStateAction<IUser>>,
     checkAuthUser: ()=> Promise<boolean>
 
   }
