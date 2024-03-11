@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/lib/appwrite/api';
-import { IUser } from '@/types';
+import { IContextType, IUser } from '@/types';
 import { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,9 +22,11 @@ const INITIAL_STATE = {
 }
 
 
-const AuthContext = createContext(INITIAL_STATE);
+const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+
+
     const [user, setUser] = useState<IUser>(INITIAL_USER);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -32,6 +34,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     const checkAuthUser = async () => {
+        setIsLoading(true);
         try {
             const currentAccount = await getCurrentUser();
 
@@ -48,11 +51,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 return true;
             }
 
+            return false;
         } catch (error) {
+            console.log("Error in Auth Context", error);
             return false;
 
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
@@ -66,7 +71,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     }, [localStorage.getItem('cookieFallback')]);
 
-    const userValues = {
+    const userValue = {
         user,
         setUser,
         isLoading,
@@ -76,11 +81,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={userValues}>
+        <AuthContext.Provider value={userValue}>
             {children}
         </AuthContext.Provider>
     )
 }
 
 export default AuthProvider;
-export const useUserContext = () => useContext(AuthContext)
+export const useUserContext = () => useContext(AuthContext);
