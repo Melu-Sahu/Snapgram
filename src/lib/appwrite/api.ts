@@ -3,6 +3,7 @@ import { Query } from "appwrite";
 import { ID } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
+
 export async function createUserAccount(user: INewUser) {
 
   try {
@@ -12,7 +13,6 @@ export async function createUserAccount(user: INewUser) {
       user.password,
       user.name,
     );
-
 
     if (!newAccount) {
       throw new Error;
@@ -31,7 +31,6 @@ export async function createUserAccount(user: INewUser) {
     return newUser;
   } catch (error) {
     console.log("Appwrite Exception :: createUserAccount Error: ", error);
-
 
   }
 
@@ -67,6 +66,7 @@ export async function signInAccount(user: { email: string, password: string }) {
 
     return session;
   } catch (error) {
+
     console.log("Appwrite Exception :: signInAccount ::", error);
 
   }
@@ -473,9 +473,9 @@ export async function getUsersPosts(userId?: string) {
 // }
 
 
-export async function getInfinitePostScroll({ pageParam }: { pageParam: Number }) {
+export async function getInfinitePostScroll({ pageParam }: { pageParam: string }) {
 
-  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(8)];
 
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam.toString()));
@@ -488,7 +488,9 @@ export async function getInfinitePostScroll({ pageParam }: { pageParam: Number }
       queries
     );
 
-    if (!posts) throw Error;
+    if (!posts) {
+      throw Error;
+    }
 
     return posts;
   } catch (error) {

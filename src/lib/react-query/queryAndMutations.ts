@@ -5,7 +5,8 @@ import {
     signOutAccount,
     createNewPost,
     getRecentPosts,
-    likePost, savePost,
+    likePost,
+    savePost,
     deleteSavedPost,
     getCurrentUser,
     getPostById,
@@ -115,7 +116,6 @@ export const useDeleteSavedPostMutation = () => {
     });
 }
 
-
 export const useGetPostByIdMutation = (postId: string) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
@@ -170,12 +170,29 @@ export const useGetCurrentUserMutation = () => {
     });
 };
 
+// export const useGetPostMutation = ()=>{
+//     return useInfiniteQuery({
+//         queryKey:[QUERY_KEYS.GET_INFINITE_POSTS],
+//         queryFn: getInfinitePostScroll,
+//         getNextPageParam: (lastPage)=>{
+
+//             if (lastPage && lastPage.documents.length === 0) {
+//                 return null;
+//             }
+
+//             const lastId = lastPage?.documents[lastPage.documents.length -1].$id;
+//             return lastId;
+//         }
+//     })
+// }
 
 export const useGetPostMutation = () => {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-        queryFn: getInfinitePostScroll,
-        getNextPageParam: (lastPage) => {
+        initialPageParam: undefined,
+        queryFn: getInfinitePostScroll as any,
+        getNextPageParam: (lastPage: any) => {
+
             // If there's no data, there are no more pages.
             if (lastPage && lastPage.documents.length === 0) {
                 return null;
@@ -183,23 +200,12 @@ export const useGetPostMutation = () => {
 
             // Use the $id of the last document as the cursor.
             const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
+            // console.log("Last Id", lastId);
+
             return lastId;
         },
+
     });
-
-
-    // return useInfiniteQuery({
-    //     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    //     queryFn: getInfiniteScroll,
-    //     getNextPageParam: (lastPage, pages) => {
-
-    //         if (lastPage && lastPage.documents.length === 0) {
-    //             //             return null;
-    //             //         }
-
-    //         }
-    //     })
-
 };
 
 export const useSerarhPostMutation = (searchTerm: string) => {
