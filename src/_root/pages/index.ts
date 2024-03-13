@@ -10,6 +10,7 @@ export {default as Profile} from './Profile';
 export {default as UpdateProfile} from './UpdateProfile';
 
 
+/* ToDos /*
 
 /* We have to add comment feature for every posts also. */
 /* Also we can think about making the creator's review so that other's can comment for creator and appreciate them. */

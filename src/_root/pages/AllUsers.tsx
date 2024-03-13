@@ -22,7 +22,10 @@ const AllUsers = () => {
 
   return (
     <div className="explore-container">
-        <h2 className="h3-bold md:h2-bold w-full mb-5">All User's</h2>
+      <div className='max-w-5xl flex gap-3 justify-start w-full py-4 pb-10'>
+        <img src="/assets/icons/people.svg" alt="add post" width={36} height={36} />
+        <h2 className='h3-bold md:h3-bold text-left w-full'>All Creators</h2>
+      </div>
       <div className="grid-container">
 
         {

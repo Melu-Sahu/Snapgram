@@ -1,9 +1,8 @@
 import Loader from '@/components/shared/Loader';
-import PostCard from '@/components/shared/PostCard';
 import { useGetPostMutation } from '@/lib/react-query/queryAndMutations';
-import { Models } from 'appwrite';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import {HomeFeedItems} from './HomeFeedItems';
 
 const Home = () => {
   const { ref, inView } = useInView();
@@ -14,9 +13,8 @@ const Home = () => {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView]);
 
-  // console.log("Posts", posts?.pages[0].documents);
+  }, [inView]);
 
   if (!posts)
     return (
@@ -34,16 +32,13 @@ const Home = () => {
             isDataLoading && !posts ? (
               <Loader />
             ) : (
-              <ul className='flex flex-col flex-1 gap-9 w-full'>
-                {
-                  posts?.pages[0]?.documents.map((post: Models.Document) => (
-                    <PostCard post={post} key={post.$id} />
-                  ))
-                }
-              </ul>
+
+              posts?.pages.map((page, index) => <HomeFeedItems posts={page.documents} key={`page-${index}`} />)
+
             )
           }
         </div>
+
         {hasNextPage && (
           <div ref={ref} className="mt-10">
             <Loader />

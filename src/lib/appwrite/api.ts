@@ -475,10 +475,10 @@ export async function getUsersPosts(userId?: string) {
 
 export async function getInfinitePostScroll({ pageParam }: { pageParam: string }) {
 
-  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(8)];
-
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(4)];
+  
   if (pageParam) {
-    queries.push(Query.cursorAfter(pageParam.toString()));
+    queries.push(Query.cursorAfter(pageParam));
   }
 
   try {
@@ -494,9 +494,8 @@ export async function getInfinitePostScroll({ pageParam }: { pageParam: string }
 
     return posts;
   } catch (error) {
-    console.log("Appwrite Exception :: getInfiniteScroll :: ", error);
+    console.log("Appwrite Exception :: getInfinitePostScroll :: ", error);
   }
-
 }
 
 export async function searchPosts(searchTerms: string) {

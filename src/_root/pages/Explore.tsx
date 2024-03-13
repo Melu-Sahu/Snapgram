@@ -35,6 +35,7 @@ const Explore = () => {
     posts.pages.every((item) => item?.documents.length === 0);
 
 
+
   return (
     <div className="explore-container">
       <div className="explore-inner_container">
@@ -83,10 +84,9 @@ const Explore = () => {
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
 
-          posts?.pages[0] && (
-            <GridPostList posts={posts.pages[0].documents} showUser={true} showState={true} />
-          )
-
+          posts?.pages.map((page) => (
+            <GridPostList posts={page.documents} showUser={true} showState={true} />
+          ))
         )}
       </div>
 
