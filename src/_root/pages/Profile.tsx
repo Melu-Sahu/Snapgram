@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext"
 import { useGetUserByIdMutation, useGetUsersPostsMutation } from "@/lib/react-query/queryAndMutations";
 import { Link, useParams } from "react-router-dom";
-import { profileTabs } from "@/constance";
+// import { profileTabs } from "@/constance";
 import GridPostList from "@/components/shared/GridPostList";
 
 const Profile = () => {
