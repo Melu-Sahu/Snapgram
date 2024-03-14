@@ -1,12 +1,12 @@
 import Loader from '@/components/shared/Loader';
 import { useUserContext } from '@/context/AuthContext'
-import { getUsersSavedPostMutatation } from '@/lib/react-query/queryAndMutations';
+import { useGetUsersSavedPostMutatation } from '@/lib/react-query/queryAndMutations';
 import { Link } from 'react-router-dom';
 
 const Saved = () => {
 
   let { user } = useUserContext();
-  const { data: savedData, isPending: isSavedDataLoading } = getUsersSavedPostMutatation(user.id);
+  const { data: savedData, isPending: isSavedDataLoading } = useGetUsersSavedPostMutatation(user.id);
 
 
   if (isSavedDataLoading)
@@ -18,12 +18,15 @@ const Saved = () => {
 
   return (
     <div className='explore-container'>
-      <h2 className="h3-bold md:h2-bold w-full mb-10">Your Saved Posts</h2>
+      <div className='max-w-5xl flex gap-3 justify-start w-full py-4 pb-10'>
+        <img src="/assets/icons/saved.svg" alt="add post" width={36} height={36} />
+        <h2 className='h3-bold md:h3-bold text-left w-full'>Your saved posts</h2>
+      </div>
       <ul className='grid-container'>
         {
           savedData?.documents.map((doc) =>
           (
-            <li key={doc.post.$id} className='relative min-w-80 h-80'>
+            <li key={doc.post.$id} className='relative min-w-70 h-70'>
               <Link to={`/posts/${doc.post.$id}`} className='grid-post_link'>
                 <img src={doc.post.imageUrl} className='h-full w-full object-cover' />
               </Link>

@@ -100,6 +100,26 @@ export async function getAllUsers() {
 
 }
 
+export async function getUserById(userId:string) {
+  try {
+
+    const user = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      userId
+    );
+
+    if(!user){
+      throw Error;
+    }
+
+    return user;
+    
+  } catch (error) {
+    console.log("Appwrite Exception :: getUserById :: ", error);
+
+  }
+}
 
 // ============================== GET USER
 export async function getCurrentUser() {
@@ -475,7 +495,7 @@ export async function getUsersPosts(userId?: string) {
 
 export async function getInfinitePostScroll({ pageParam }: { pageParam: string }) {
 
-  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(4)];
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
   
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam));
@@ -517,3 +537,30 @@ export async function searchPosts(searchTerms: string) {
 
 }
 
+
+export async function getUsers(limit:number) {
+  
+  const queries : string[] = [Query.orderDesc("$createdAt")];
+
+  if (limit) {
+    queries.push(Query.limit(limit));
+  }
+
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      queries
+    )
+
+    if (!users) {
+      throw Error;
+    }
+
+    return users;
+
+  } catch (error) {
+    console.log("Appwrite Exception :: getUsers :: ", error);
+  }
+
+}

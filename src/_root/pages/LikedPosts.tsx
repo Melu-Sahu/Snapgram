@@ -7,4 +7,4 @@ const LikedPosts = () => {
   )
 }
 
-export default LikedPosts
+export default LikedPosts;

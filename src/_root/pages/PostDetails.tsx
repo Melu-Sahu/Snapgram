@@ -3,7 +3,7 @@ import PostStats from '@/components/shared/PostState';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
 // import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
-import { getUsersPostsMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
+import { useGetUsersPostsMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
 import { multiFormatDateString } from '@/lib/utils';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -16,7 +16,7 @@ const PostDetails = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const { data: userPosts, isLoading: isUserPostLoading } = getUsersPostsMutation(post?.creator.$id);
+  const { data: userPosts, isLoading: isUserPostLoading } = useGetUsersPostsMutation(post?.creator.$id);
   // const { mutate: deletePost } = useDeletePostMutation();
 
 
@@ -27,7 +27,6 @@ const PostDetails = () => {
     /* Delete post functionality is not working now. We will fix it later. */
     // const isDeleted = deletePost({ postId: post?.$id, imageId: post?.imageId });
     // console.log("Is Deleted", isDeleted);
-
 
     // if (isDeleted) {}
 

@@ -34,8 +34,6 @@ const Explore = () => {
   const shouldShowPosts = !shouldShowSearchResults &&
     posts.pages.every((item) => item?.documents.length === 0);
 
-
-
   return (
     <div className="explore-container">
       <div className="explore-inner_container">
@@ -88,13 +86,13 @@ const Explore = () => {
             <GridPostList posts={page.documents} showUser={true} showState={true} />
           ))
         )}
-      </div>
 
-      {hasNextPage && !searchValue && (
-        <div ref={ref} className="mt-10">
-          <Loader />
-        </div>
-      )}
+        {hasNextPage && !searchValue && (
+          <div ref={ref} className="mt-10">
+            <Loader />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

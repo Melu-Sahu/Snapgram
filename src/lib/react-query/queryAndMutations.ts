@@ -16,7 +16,9 @@ import {
     searchPosts,
     getAllUsers,
     getSavedPosts,
-    getInfinitePostScroll
+    getInfinitePostScroll,
+    getUsers,
+    getUserById
 } from '../appwrite/api';
 import { INewUser, INewPost, IUpdatePost } from '@/types';
 import { QUERY_KEYS } from './queryKeys';
@@ -152,7 +154,7 @@ export const useDeletePostMutation = () => {
 
 // User's Post Mutation
 
-export const getUsersPostsMutation = (userId?: string) => {
+export const useGetUsersPostsMutation = (userId: string) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
         queryFn: () => getUsersPosts(userId),
@@ -197,17 +199,32 @@ export const useSerarhPostMutation = (searchTerm: string) => {
     });
 };
 
-export const getAllUsersMutation = () => {
+export const useGetAllUsersMutation = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_USERS],
         queryFn: () => getAllUsers(),
     });
 };
 
-export const getUsersSavedPostMutatation = (userId: string) => {
+export const useGetUsersSavedPostMutatation = (userId: string) => {
     return useQuery({
         queryKey: [QUERY_KEYS.USERS_SAVED_POST_DETAILS],
         queryFn: () => getSavedPosts(userId),
         enabled: !!userId
     });
 };
+
+export const useGetUsersMutation = (limit: number) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USERS],
+        queryFn: () => getUsers(limit)
+    });
+}
+
+
+export const useGetUserByIdMutation = (userId: string)=>{
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USER_BY_ID],
+        queryFn: ()=> getUserById(userId)
+    })
+}

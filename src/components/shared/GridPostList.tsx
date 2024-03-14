@@ -8,16 +8,19 @@ type GridPostListProps = {
   showUser?: boolean;
   showState?: boolean;
 }
+
 const GridPostList = ({ posts, showUser = true, showState = true }: GridPostListProps) => {
 
   const { user } = useUserContext();
+
+  // console.log("Posts in grid postlist", posts)
   
   return (
-    <ul className='grid-container'>
+    <ul className='grid-container w-full'>
       {
         posts.map((post: Models.Document) => (
-          <li key={post.$id} className='relative min-w-70 h-70'>
-            <Link to={`/posts/${post.$id}`} className='grid-post_link'>
+          <li key={post.$id} className='relative min-w-60 h-60'>
+            <Link to={`/posts/${post.$id}`} className='grid-post_link '>
               <img src={post.imageUrl} className='h-full w-full object-cover' />
             </Link>
 

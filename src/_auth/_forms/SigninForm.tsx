@@ -40,7 +40,8 @@ const SigninForm = () => {
 
     if (!session) {
       return toast({
-        title: "Signin Failed. Please try again!!"
+        title: "Signin Failed. Please try again!!",
+        variant:"destructive"
       })
     }
 
