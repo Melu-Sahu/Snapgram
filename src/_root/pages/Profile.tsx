@@ -23,8 +23,7 @@ const Profile = () => {
     )
   }
 
-  console.log("Users Post", usersPosts);
-
+  // console.log("Users Post", usersPosts);
 
   function onFollowClick() {
     alert("Following")
@@ -82,7 +81,7 @@ const Profile = () => {
 
 
       <div className="w-full">
-        <h1 className="lg:h2-bold sm:h3-bold mb-6">Your all posts</h1>
+        <h1 className="lg:h2-bold sm:h3-bold mb-6"><span className="text-violet-500">{creatorProfile?.username}</span>'s  all posts</h1>
 
         {
           (isUsersPostLoading) ?
@@ -94,7 +93,6 @@ const Profile = () => {
             (
               <GridPostList posts={usersPosts?.documents || []} showUser={false} showState={true} />
             )
-
         }
 
       </div>
