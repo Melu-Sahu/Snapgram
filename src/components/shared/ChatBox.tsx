@@ -1,12 +1,12 @@
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 
 const ChatBox = () => {
-    const {id} = useParams()
+  const { id } = useParams()
   return (
-    <div>
-      Chat with id: {id}
+    <div className='flex justify-center items-center w-full'>
+      **Not yet implimented<br />Chat with User: id: {id} :
     </div>
   )
 }
 
-export default ChatBox
+export default ChatBox;

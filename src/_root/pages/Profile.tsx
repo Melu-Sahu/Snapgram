@@ -26,7 +26,7 @@ const Profile = () => {
   // console.log("Users Post", usersPosts);
 
   function onFollowClick() {
-    alert("Following")
+    alert("Currently follow functionality is not implimented. Working on it.")
   }
 
   return (
@@ -39,7 +39,7 @@ const Profile = () => {
               <h1 className="lg:h1-bold sm:h2-bold">{creatorProfile?.name}</h1>
               {
                 (user.id === id) ? (
-                  <Link to={`/update-profile/${id}`} className="flex gap-3 bg-dark-3 hover:bg-dark-4 p-2 rounded-md items-center justify-center">
+                  <Link to={`/update-profile/${creatorProfile?.$id}`} className="flex gap-3 bg-dark-3 hover:bg-dark-4 p-2 rounded-md items-center justify-center">
                     <img src="/assets/icons/edit.svg" alt="edit" width={25} height={25} /> Edit Profile
                   </Link>
                 ) : (
@@ -54,7 +54,7 @@ const Profile = () => {
             </div>
             <p className="text-light-3 my-3">@{creatorProfile?.username}</p>
             <div className="flex gap-14 w-1.5 justify-between items-center ">
-              <p className="flex gap-3"><span className="text-violet-400">{42}</span> posts </p>
+              <p className="flex gap-3"><span className="text-violet-400">{usersPosts?.documents.length}</span> posts </p>
               <p className="flex gap-3"><span className="text-violet-400">{422}</span> Follower </p>
               <p className="flex gap-3"><span className="text-violet-400">{642}</span> Following </p>
             </div>
@@ -81,7 +81,7 @@ const Profile = () => {
 
 
       <div className="w-full">
-        <h1 className="lg:h2-bold sm:h3-bold mb-6"><span className="text-violet-500">{creatorProfile?.username}</span>'s  all posts</h1>
+        <h1 className="lg:h2-bold sm:h3-bold mb-6"><span className="text-violet-500">@{creatorProfile?.username}</span>'s  all posts</h1>
 
         {
           (isUsersPostLoading) ?
