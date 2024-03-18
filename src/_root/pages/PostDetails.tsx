@@ -2,8 +2,7 @@ import Loader from '@/components/shared/Loader';
 import PostStats from '@/components/shared/PostState';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
-// import { getUsersPostsMutation, useDeletePostMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
-import { useGetUsersPostsMutation, useGetPostByIdMutation } from '@/lib/react-query/queryAndMutations';
+import { useGetUsersPostsMutation, useGetPostByIdMutation, useDeletePostMutation } from '@/lib/react-query/queryAndMutations';
 import { multiFormatDateString } from '@/lib/utils';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -17,7 +16,7 @@ const PostDetails = () => {
   const navigate = useNavigate();
 
   const { data: userPosts, isLoading: isUserPostLoading } = useGetUsersPostsMutation(post?.creator.$id);
-  // const { mutate: deletePost } = useDeletePostMutation();
+  const { mutate: deletePost } = useDeletePostMutation();
 
 
   const handleDeletePost = () => {
@@ -25,14 +24,20 @@ const PostDetails = () => {
     console.log("Delete button pressed.");
 
     /* Delete post functionality is not working now. We will fix it later. */
-    // const isDeleted = deletePost({ postId: post?.$id, imageId: post?.imageId });
-    // console.log("Is Deleted", isDeleted);
+    const isDeleted = deletePost({ postId: post?.$id || '', imageId: post?.imageId });
+    console.log("Is Deleted", isDeleted);
 
-    // if (isDeleted) {}
+    if (isDeleted === undefined) {
+      toast({
+        title: 'Something wents wrong. Please try again.'
+      })
+    } else {
+      toast({
+        title: "Post Deleted."
+      });
+    }
 
-    toast({
-      title: "Post Deleted."
-    });
+
 
     navigate("/");
 
