@@ -18,9 +18,10 @@ import {
     getSavedPosts,
     getInfinitePostScroll,
     getUsers,
-    getUserById
+    getUserById,
+    updateUser
 } from '../appwrite/api';
-import { INewUser, INewPost, IUpdatePost } from '@/types';
+import { INewUser, INewPost, IUpdatePost, IUpdateUser } from '@/types';
 import { QUERY_KEYS } from './queryKeys';
 
 // Auth Services
@@ -222,10 +223,24 @@ export const useGetUsersMutation = (limit: number) => {
 }
 
 
-export const useGetUserByIdMutation = (userId: string)=>{
+export const useGetUserByIdMutation = (userId: string) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_USER_BY_ID],
-        queryFn: ()=> getUserById(userId)
+        queryFn: () => getUserById(userId)
     })
 }
 
+export const useUpdateUserMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (user: IUpdateUser) => updateUser(user),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
+            });
+        },
+    });
+};

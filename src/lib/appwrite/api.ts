@@ -1,4 +1,4 @@
-import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { Query } from "appwrite";
 import { ID } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
@@ -100,7 +100,7 @@ export async function getAllUsers() {
 
 }
 
-export async function getUserById(userId:string) {
+export async function getUserById(userId: string) {
   try {
 
     const user = await databases.getDocument(
@@ -109,12 +109,12 @@ export async function getUserById(userId:string) {
       userId
     );
 
-    if(!user){
+    if (!user) {
       throw Error;
     }
 
     return user;
-    
+
   } catch (error) {
     console.log("Appwrite Exception :: getUserById :: ", error);
 
@@ -496,7 +496,7 @@ export async function getUsersPosts(userId?: string) {
 export async function getInfinitePostScroll({ pageParam }: { pageParam: string }) {
 
   const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
-  
+
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam));
   }
@@ -538,9 +538,9 @@ export async function searchPosts(searchTerms: string) {
 }
 
 
-export async function getUsers(limit:number) {
-  
-  const queries : string[] = [Query.orderDesc("$createdAt")];
+export async function getUsers(limit: number) {
+
+  const queries: string[] = [Query.orderDesc("$createdAt")];
 
   if (limit) {
     queries.push(Query.limit(limit));
@@ -563,4 +563,60 @@ export async function getUsers(limit:number) {
     console.log("Appwrite Exception :: getUsers :: ", error);
   }
 
+}
+
+
+
+export async function updateUser(user: IUpdateUser) {
+  const hasFileToUpdate = user.file.length > 0;
+  try {
+    let image = {
+      imageUrl: user.imageUrl,
+      imageId: user.imageId,
+    };
+
+    if (hasFileToUpdate) {
+      const uploadedFile = await uploadFile(user.file[0]);
+      if (!uploadedFile) throw Error;
+
+      const fileUrl = await getFilePreview(uploadedFile.$id);
+
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+
+      // console.log("File Url", fileUrl);
+
+
+      image = { ...image, imageUrl: fileUrl.href, imageId: uploadedFile.$id };
+    }
+
+    const updatedUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      user.userId,
+      {
+        name: user.name,
+        bio: user.bio,
+        imageUrl: image.imageUrl,
+        imageId: image.imageId,
+      }
+    );
+
+    if (!updatedUser) {
+      if (hasFileToUpdate) {
+        await deleteFile(image.imageId);
+      }
+      throw Error;
+    }
+
+    if (user.imageId && hasFileToUpdate) {
+      await deleteFile(user.imageId);
+    }
+
+    return updatedUser;
+  } catch (error) {
+    console.log("Appwrite Exception :: updateUser :: ", error);
+  }
 }

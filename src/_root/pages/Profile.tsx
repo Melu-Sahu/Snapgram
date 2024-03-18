@@ -35,12 +35,12 @@ const Profile = () => {
         <img src={creatorProfile?.imageUrl} alt="Creator's Photo" className="rounded-full" width={150} height={150} />
         <div className="flex flex-col w-full">
           <div className="w-full">
-            <div className="flex items-center justify-start gap-6">
+            <div className="flex items-center justify-start gap-6 ">
               <h1 className="lg:h1-bold sm:h2-bold">{creatorProfile?.name}</h1>
               {
                 (user.id === id) ? (
-                  <Link to={`/update-profile/${creatorProfile?.$id}`} className="flex gap-3 bg-dark-3 hover:bg-dark-4 p-2 rounded-md items-center justify-center">
-                    <img src="/assets/icons/edit.svg" alt="edit" width={25} height={25} /> Edit Profile
+                  <Link to={`/update-profile/${creatorProfile?.$id}`} className="flex gap-3 bg-dark-3 hover:bg-dark-4 p-2  rounded-md items-center justify-center">
+                    <img src="/assets/icons/edit.svg" alt="edit" width={20} height={20} /> <p className="xs:text-[12px] lg:text-[18px]">Edit Profile</p>
                   </Link>
                 ) : (
                   <div className="flex gap-10 justify-evenly ">
@@ -53,10 +53,10 @@ const Profile = () => {
               }
             </div>
             <p className="text-light-3 my-3">@{creatorProfile?.username}</p>
-            <div className="flex gap-14 w-1.5 justify-between items-center ">
-              <p className="flex gap-3"><span className="text-violet-400">{usersPosts?.documents.length}</span> posts </p>
-              <p className="flex gap-3"><span className="text-violet-400">{422}</span> Follower </p>
-              <p className="flex gap-3"><span className="text-violet-400">{642}</span> Following </p>
+            <div className="flex lg:gap-14 sm:gap-7 xs:gap-5 w-1.5 justify-between items-center flex-1 ">
+              <p className="flex gap-3 xs:text-[12px] md:text-[18px] lg:text-lg"><span className="text-violet-400 ">{usersPosts?.documents.length}</span> posts </p>
+              <p className="flex gap-3 xs:text-[12px] md:text-[18px] lg:text-lg"><span className="text-violet-400 ">{422}</span>Follower </p>
+              <p className="flex gap-3 xs:text-[12px] md:text-[18px] lg:text-lg"><span className="text-violet-400 ">{642}</span>Following </p>
             </div>
             <hr className="border w-full border-dark-4/80 my-2" />
             <p >{creatorProfile?.bio || "A Snapgram Creator."}</p>
